@@ -9,6 +9,7 @@ class Sopd extends Model
 {
     use HasFactory;
 
+    protected $table = 'sopd';
     protected $primaryKey = 'id_sopd';
 
     protected $fillable = ['nama_sopd','username','password',
@@ -17,4 +18,5 @@ class Sopd extends Model
     // public function lapor(){
     //     return $this->hasMany(Lapor::class);
     // }
+
 }
