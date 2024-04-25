@@ -52,44 +52,49 @@ class LaporController extends Controller
 			'tanggal_disposisi'  => 'required|date',
 			'tanggal_tindak_lanjut' => 'required|date',
 			'tanggal_batas'   => 'required|date',
-            'berkas' => 'max:32000|mimes:pdf,png,jpg,jpeg'
         ]);
 
-        $lokasi = 'berkas';
-        $file = $tgl . '--' . time() . '.' .$request->berkas->extension();
+        if($request->berkas != null){
+            $validasifoto = $request->validate([
+                'berkas' => 'max:32000|mimes:pdf,png,jpg,jpeg'
+            ]);
 
-        $tambah = Lapor::create([
-            'judul_laporan' => $request['judul_laporan'],
-            'isi_laporan'   => $validasi['isi_laporan'],
-			'klasifikasi'   => $validasi['klasifikasi'],
-			'kategori'      => $validasi['kategori'],
-			'disposisi'     => $validasi['disposisi'],
-			'tanggal_masuk'  => $validasi['tanggal_masuk'],
-			'tanggal_disposisi' => $validasi['tanggal_disposisi'],
-			'tanggal_tindak_lanjut' => $validasi['tanggal_tindak_lanjut'],
-			'tanggal_batas'   => $validasi['tanggal_batas'],
-            'berkas' => $file,
-        ]);
-        if($tambah){
-            $file = $request->file('berkas')->storeAs('public/berkas',$file);
+            $lokasi = 'berkas';
+            $file = $tgl . '--' . time() . '.' .$validasifoto['berkas']->extension();
+
+            $tambah = Lapor::create([
+                'judul_laporan' => $request['judul_laporan'],
+                'isi_laporan'   => $validasi['isi_laporan'],
+                'klasifikasi'   => $validasi['klasifikasi'],
+                'kategori'      => $validasi['kategori'],
+                'disposisi'     => $validasi['disposisi'],
+                'tanggal_masuk'  => $validasi['tanggal_masuk'],
+                'tanggal_disposisi' => $validasi['tanggal_disposisi'],
+                'tanggal_tindak_lanjut' => $validasi['tanggal_tindak_lanjut'],
+                'tanggal_batas'   => $validasi['tanggal_batas'],
+                'berkas' => $file,
+            ]);
+            if($tambah){
+                $file = $request->file('berkas')->storeAs('public/berkas',$file);
+                return redirect()->back()->withInput()->with('Sukses', 'Data Berhasil Ditambahkan');
+            }
+        }else{
+            $tambah = Lapor::create([
+                'judul_laporan' => $request['judul_laporan'],
+                'isi_laporan'   => $validasi['isi_laporan'],
+                'klasifikasi'   => $validasi['klasifikasi'],
+                'kategori'      => $validasi['kategori'],
+                'disposisi'     => $validasi['disposisi'],
+                'tanggal_masuk'  => $validasi['tanggal_masuk'],
+                'tanggal_disposisi' => $validasi['tanggal_disposisi'],
+                'tanggal_tindak_lanjut' => $validasi['tanggal_tindak_lanjut'],
+                'tanggal_batas'   => $validasi['tanggal_batas'],
+                'berkas' => null,
+            ]);
 
             return redirect()->back()->withInput()->with('Sukses', 'Data Berhasil Ditambahkan');
-
-            // $query = $this->db->insert('lapor', $object);
-            // $id = $this->db->insert_id();
-            // $detail = base_url('detail/index/'.$id);
-            // $this->db->where('id_sopd', $disposisi);
-            // $skpd = $this->db->get('sopd')->row()->nama_sopd;
-            // $message = 'Telah masuk aduan masyarakat melalui SP4N LAPOR! dengan judul '.$judul.'. Telah didisposisikan ke '.$skpd.' tanggal '.$tanggal_disposisi.'. Mohon segera mungkin ditindaklanjuti.';
-
-            // if ($query) {
-            //     $this->send_wa($disposisi, $message);
-            //   //  $this->send_email($judul, $message, $file);
-            //     redirect(base_url('data'), 'refresh');
-            // } else {
-            //     echo "Gagal Menyimpan!";
-            // }
         }
+
 
     }
 
@@ -148,6 +153,8 @@ class LaporController extends Controller
         else{
             $tgl = date('d-m-Y');
             $lokasi = 'berkas';
+            // Storage::delete('public/berkas/' . $lapor->berkas);
+
             $file = $tgl . '--' . time() . '.' .$request->berkas->extension();
 
             $lapor->update([
