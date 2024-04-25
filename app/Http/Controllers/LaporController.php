@@ -153,7 +153,7 @@ class LaporController extends Controller
         else{
             $tgl = date('d-m-Y');
             $lokasi = 'berkas';
-            // Storage::delete('public/berkas/' . $lapor->berkas);
+            Storage::delete('public/berkas/' . $lapor->berkas);
 
             $file = $tgl . '--' . time() . '.' .$request->berkas->extension();
 
