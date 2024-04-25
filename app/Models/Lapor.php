@@ -9,7 +9,6 @@ class Lapor extends Model
 {
     use HasFactory;
 
-    // protected $table = 'lapor';
     protected $primaryKey = 'id_lapor';
 
     protected $fillable = ['judul_laporan','isi_laporan','klasifikasi',
